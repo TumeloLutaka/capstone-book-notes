@@ -1,0 +1,64 @@
+<%- include("./partials/header.ejs") %>
+
+<div class="container">
+    <ul>
+    <% books.forEach( book => { %>
+        <li class="book-item">
+            <div class="book-details">
+                <div class="left">
+                    <img src="<%= book.image_url %>" alt="Book Image: <%= book.title %>">
+                    <a class="title" href="/notes/<%= book.id %>">
+                        <h2><%= book.title %></h2>
+                    </a>
+
+                    <!-- Displays Date and Rating for the book -->
+                    <p class="date-read">Date Read: <%= new Date(book.date_read).toLocaleDateString().replace(/\//g, '-') %></p>
+                    <p class="book-rating"><%= book.rating %> out of 10</p>
+                </div>
+                <div class="right">
+                    <p><%= book.description %></p>
+                </div>
+            </div>
+            <div class="book-btn-container">
+                <a class="btn btn-tertiary" href="/notes/<%= book.id %>">View Notes</a>
+                <form action="/delete-book/<%= book.id %>" method="POST">
+                    <input type="hidden" name="note-id" value="<%= book.id %>">
+                    <input class="btn btn-delete" type="submit" value="Delete" title="Delete">
+                </form>
+            </div>
+        </li>
+        <% }) %>
+    </ul>    
+</div>
+
+<!-- Form used to add new book to read list -->
+<form action="/" method="POST" id="add-book-form" class="add-book-form" style="display: none;">
+    <h1>Add Book</h1>
+    <input type="text" name="title" placeholder="title" required>
+    <input type="text" name="isbn" placeholder="023423434..." required>
+    <input type="date" name="date-read" required>
+    <input type="number" id="rating" name="rating" min="0" max="10" step="0.5" placeholder="4.2..." required>
+    <textarea name="description" placeholder="Book description...." required></textarea>
+    <div class="button-container">
+        <input class="btn btn-secondary" type="submit" value="Add Book">
+        <button id="cancel-form-btn" class="btn btn-tertiary" type="button">Cancel</button>
+    </div>
+</form>
+
+<script>
+    //Adding functionality to form button to close the form when pressed
+    document.querySelector("#cancel-form-btn").addEventListener("click", () => {
+        document.querySelector("#add-book-form").style.display = "none"
+
+        document.querySelector("input=[name='title']").value = ""
+        document.querySelector("input=[name='isbn']").value = ""
+        document.querySelector("input=[name='rating']").value = ""
+        document.querySelector("textarea=[name='description']").value = ""
+    })
+
+    document.querySelector("#add-book-btn").addEventListener("click", () => {
+        document.querySelector("#add-book-form").style.display = "flex"
+    })
+</script>
+
+<%- include("./partials/footer.ejs") %>

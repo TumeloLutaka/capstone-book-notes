@@ -1,0 +1,82 @@
+<%- include("./partials/header.ejs") %>
+
+
+<div class="container">
+    
+    <div class="selected-book-container">
+        <div class="img-container">
+            <img src="<%= book.image_url %>" alt="Book Image: <%= book.title %>">
+        </div>
+        <div class="details-container">
+            <h1><%= book.title %></h1>
+            <p class="date-read">Date Read: <%= new Date(book.date_read).toLocaleDateString().replace(/\//g, '-') %></p>
+            <p class="book-rating"><%= book.rating %> out of 10</p>
+        </div>
+    </div>
+        
+    <h2 style="margin-top: 20px;">Description</h2>
+    <p class="book-description"><%= book.description %></p>
+
+    <!-- Notes section -->
+    <h2 style="margin-bottom: 20px;">Notes</h2>
+    <div class="note-holder-container">
+        <div class="add-note-container">
+            <h2>New Note</h2>
+            <form action="/add-note" method="POST" class="add-note-form"> 
+                <input type="hidden" name="book-id" value="<%= book.id %>" required>
+                <input type="text" name="title" placeholder="Note title..." required>
+                <textarea name="details" required></textarea>
+                <input class="btn btn-secondary" type="submit" value="Add Note">
+            </form>
+        </div>
+        <div class="notes-list-container">
+            <ul class="notes-list">
+                <% notes.forEach( note => { %>
+                    <li>
+                        <form class="delete-note-form" action="/delete-note/<%= note.id %>" method="POST">
+                            <input type="hidden" name="note-id" value="<%= note.id %>">
+                            <input class="btn btn-tertiary delete-note-btn" type="submit" value="X">
+                        </form>
+                        <div class="note-title">
+                            <h3 class="note-title-text"><%= note.title %></h3>
+                            <form class="note-title-input" action="/edit-note-title/<%= note.id %>" method="POST" style="display: none;">
+                                <input type="text" name="title" value="<%= note.title %>">
+                                <input class="btn btn-secondary" type="submit" value="Save">
+                            </form>
+                        </div>
+                        <div class="note-details">
+                            <p class="note-details-text"><%= note.details %></p>
+                            <form class="note-details-input" action="/edit-note-details/<%= note.id %>" method="POST" style="display: none;">
+                                <textarea name="details"><%= note.details %></textarea>
+                                <input class="btn btn-secondary" type="submit" value="Save">
+                            </form>
+                        </div>
+                        <p class="date-created"><%= new Date(note.created).toLocaleDateString().replace(/\//g, '-') %></p>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Adding event listener to the title text of a note. When a user double clicks it there comes an edditing form
+        const noteTitleTextList = document.querySelectorAll(".note-title-text")
+        noteTitleTextList.forEach ( titleText => {
+            titleText.addEventListener("dblclick", (event) => {
+                event.target.style.display = "none"
+                titleText.nextElementSibling.style.display = "flex"
+            })
+        })
+
+        // Adding event listener to the details text of a note. When a user double clicks it there comes an edditing form
+        const noteDetailsTextList = document.querySelectorAll(".note-details-text")
+        noteDetailsTextList.forEach( detailsText => {
+            detailsText.addEventListener("dblclick", (event) => {
+                event.target.style.display = "none"
+                detailsText.nextElementSibling.style.display = "flex"
+            })
+        })
+    </script>
+        
+<%- include("./partials/footer.ejs") %>
