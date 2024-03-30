@@ -9,10 +9,8 @@ const { Pool } = pg;
 const app = express();
 const PORT = 3000;
  
-const connectionString = "postgres://tumelo:hmxD4nJFBrIoRRthoDyp9LRtwf3sG9sN@dpg-co3kue21hbls73bjpntg-a.oregon-postgres.render.com/book_notes_jhsk";//you can create your postgreSQL server on render.com or Vercel and then they'll give u external URL copy that and paste it here
- 
 const db = new Pool({
-  connectionString: connectionString,
+  connectionString: process.env.POSTGRES_URL,
   // If you're using a service like Heroku, you might need this for SSL:
   ssl: {
     rejectUnauthorized: false,
